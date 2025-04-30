@@ -1,7 +1,7 @@
-import express, { Request, Response } from "express";
+import express from "express";
 export const app = express();
 
-app.get("/", function (_req: Request, res: Response) {
-  console.log("hello");
-  res.send("hello");
-});
+app.use(express.json())
+
+app.post("/sign",);
+app.post("/login",);
