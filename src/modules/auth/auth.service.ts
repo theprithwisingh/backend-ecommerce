@@ -14,9 +14,10 @@ export const AuthService = {
       data: { name, email, password: hashedPassword },
     });
 
-    const token = generateToken(user);
+    const token = await generateToken(user);
+    console.log(token)
 
-    return { user: { name: user.name, email: user.email }, token };
+    return { user: { name: user.name, email: user.email }, token };//imp
   },
 
   login: async ({ email, password }: LoginInput) => {
@@ -26,8 +27,8 @@ export const AuthService = {
     const isMatch = await verifyPassword(user.password, password);
     if (!isMatch) throw new Error("Invalid credentials");
 
-    const token = generateToken(user);
-
-    return { user: { name: user.name, email: user.email }, token };
+    const token = await generateToken(user);
+    console.log(token)
+    return { user: { name: user.name, email: user.email }, token };//imp
   }
 };

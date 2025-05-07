@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -9,62 +8,84 @@ datasource db {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
-  name       String
-  email      String    @unique
-  password   String
-  role       Role      @default(USER)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String    @unique
+  password    String
+  role        Role      @default(USER)
+  avatarUrl   String?
+  phoneNumber String    @unique
+  isVerified  Boolean   @default(false)
+  dateOfBirth DateTime?
+  gender      String?
+  lastLoginAt DateTime? // Optional timestamp
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  orders     Order[]
-  reviews    Review[]
+  addressList Address[] // 1-to-many relation
+
+  orders  Order[]
+  reviews Review[]
+}
+
+model Address {
+  id          Int     @id @default(autoincrement())
+  label       String?
+  street      String
+  city        String
+  state       String
+  postalCode  String
+  country     String
+  isDefault   Boolean @default(false)
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
 }
 
 model Product {
-  id          Int        @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   description String
   price       Float
   stock       Int
   image       String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  category    Category   @relation(fields: [categoryId], references: [id])
-  categoryId  Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
 
-  reviews     Review[]
-  orderItems  OrderItem[]
+  reviews    Review[]
+  orderItems OrderItem[]
 }
 
 model Category {
-  id        Int        @id @default(autoincrement())
-  name      String     @unique
-  products  Product[]
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  products Product[]
 }
 
 model Review {
-  id         Int       @id @default(autoincrement())
-  rating     Int       @default(1)
-  comment    String
-  createdAt  DateTime  @default(now())
+  id        Int      @id @default(autoincrement())
+  rating    Int      @default(1)
+  comment   String
+  createdAt DateTime @default(now())
 
-  user       User      @relation(fields: [userId], references: [id])
-  userId     Int
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
 
-  product    Product   @relation(fields: [productId], references: [id])
-  productId  Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
 }
 
 model Order {
-  id         Int         @id @default(autoincrement())
-  total      Float
-  status     OrderStatus @default(PENDING)
-  createdAt  DateTime    @default(now())
+  id        Int         @id @default(autoincrement())
+  total     Float
+  status    OrderStatus @default(PENDING)
+  createdAt DateTime    @default(now())
 
-  user       User        @relation(fields: [userId], references: [id])
-  userId     Int
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
 
   orderItems OrderItem[]
   payment    Payment?
@@ -72,43 +93,45 @@ model Order {
 }
 
 model OrderItem {
-  id        Int      @id @default(autoincrement())
-  quantity  Int
-  price     Float
+  id       Int   @id @default(autoincrement())
+  quantity Int
+  price    Float
 
-  order     Order    @relation(fields: [orderId], references: [id])
-  orderId   Int
+  order   Order @relation(fields: [orderId], references: [id])
+  orderId Int
 
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
   productId Int
 }
 
 model Payment {
-  id          Int      @id @default(autoincrement())
-  provider    String   // e.g., Stripe, PayPal
-  status      String   // e.g., succeeded, failed
-  amount      Float
-  paidAt      DateTime
+  id       Int      @id @default(autoincrement())
+  provider String // Stripe, PayPal
+  status   String //succeeded, failed
+  amount   Float
+  paidAt   DateTime
 
-  order       Order    @relation(fields: [orderId], references: [id])
-  orderId     Int      @unique
+  order   Order @relation(fields: [orderId], references: [id])
+  orderId Int   @unique
 }
 
 model Shipping {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   address    String
   city       String
   postalCode String
   country    String
   shippedAt  DateTime?
 
-  order      Order    @relation(fields: [orderId], references: [id])
-  orderId    Int      @unique
+  order   Order @relation(fields: [orderId], references: [id])
+  orderId Int   @unique
 }
 
 enum Role {
   ADMIN
   USER
+  SELLER
+  DELIVERY_AGENT
 }
 
 enum OrderStatus {

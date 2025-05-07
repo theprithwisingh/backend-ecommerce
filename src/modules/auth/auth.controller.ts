@@ -70,7 +70,7 @@ import { SignupInput, LoginInput } from './auth.types';
 
 
 export const signinController = async (req: Request, res: Response) => {
-  const data: SignupInput = req.body;//this data from auth.types.ts
+  const data: SignupInput = req.body;//this data  come from auth.types.ts
   try {
     const result = await AuthService.signup(data);
     res.status(201).json({ message: 'Signup successful', ...result });
