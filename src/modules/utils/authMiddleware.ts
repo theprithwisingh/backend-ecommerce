@@ -1,7 +1,18 @@
 import { Request,Response,NextFunction } from "express";
-
 import jwt from "jsonwebtoken";
 
+interface AuthPayload{
+    userId:number,
+    role:string
+}
+declare global {
+    namespace Express {
+      interface Request {
+        user?: AuthPayload;
+      }
+    }
+  }
+  
 export function authMiddleware(req:Request,res:Response, next:NextFunction){
 const authHeader = req.headers["authorization"];
 if (!authHeader) {
