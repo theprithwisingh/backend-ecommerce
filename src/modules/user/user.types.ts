@@ -1,5 +1,3 @@
-import { Request } from 'express';
-
 export type UserRole = 'user' | 'admin' | 'seller' | 'deliveryAgent';
 
 export interface AddressInput {
@@ -39,10 +37,3 @@ lastLoginAt?: Date;
 addressList?: AddressInput[];
 }
 
-export interface AuthRequest extends Request {
-user: {
-id: string;
-email: string;
-role: UserRole;
-};
-}

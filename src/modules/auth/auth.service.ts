@@ -13,11 +13,19 @@ export const AuthService = {
     const user = await prisma.user.create({
       data: { name, email, password: hashedPassword },
     });
+  //user return this type object -> {
+  //"id": 2,
+  //"name": "John Doe",
+  //"email": "john.doe@example.com",
+  //"password": "hashedPassword123456",
+  //"createdAt": "2025-05-09T10:00:00Z",
+  //"updatedAt": "2025-05-09T10:00:00Z" }
+
 
     const token = await generateToken(user);
     console.log(token)
 
-    return { user: { name: user.name, email: user.email }, token };//imp
+    return { user: { id: user.id,name:user.name, email: user.email }, token };
   },
 
   login: async ({ email, password }: LoginInput) => {
@@ -28,7 +36,7 @@ export const AuthService = {
     if (!isMatch) throw new Error("Invalid credentials");
 
     const token = await generateToken(user);
-    console.log(token)
-    return { user: { name: user.name, email: user.email }, token };//imp
+    
+    return { user: { id: user.id,name:user.name, email: user.email }, token };//imp
   }
 };

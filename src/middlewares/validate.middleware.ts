@@ -17,7 +17,6 @@ export const validate = (schema: ZodSchema<any>): RequestHandler => {
         });
         return;
       }
-
       console.error("Unexpected validation error:", error);
       res.status(500).json({ message: 'Internal Server Error' });
       return;
